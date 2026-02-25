@@ -452,7 +452,6 @@ a {
         
         align-items: center;
         flex-direction: column-reverse; /* Puts the Button at bottom, Slider above */
-        gap: 15px;
         z-index: 10001;
                
     }
