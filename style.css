@@ -51,7 +51,6 @@ body {
 
 /* --- THE PLANT STAGE --- */
 #plant-container {
-    /* Large enough for your detailed SVG */
    width: 100%;
     height: 100vh;
     margin-top: 20px;
@@ -62,8 +61,8 @@ body {
 
    position: relative;
     z-index: 1;
+   transform: translateZ(0);
     
-    /* A subtle spotlight background */
 }
 
 
@@ -102,7 +101,11 @@ svg {
     align-items: flex-end;  /* Aligns everything to the right edge */
     gap: 20px;
     
-    z-index: 10; /* Ensures controls always float on top of the plant */
+    z-index: 50;
+   pointer-events: none;/* Ensures controls always float on top of the plant */
+}
+.controls * {
+    pointer-events: auto;
 }
 
 .control-group {
@@ -426,6 +429,11 @@ a {
 /* --- MOBILE LAYOUT (Phones & Tablets) --- */
 @media (max-width: 800px) {
 
+   .dynamic-leaf {
+        transition: none !important;
+        will-change: filter; /* Hint to browser to keep it visible */
+    }
+
     body {
         /* This adds invisible "padding" at the bottom.
            Flexbox sees this and thinks the screen is shorter,
@@ -548,6 +556,8 @@ a {
         /* Increase from 20px to 40px for a huge touch target */
         padding: 40px 0; 
         background-clip: content-box;
+       z-index: 1000;
+        position: relative;
     }
 }
 
@@ -564,6 +574,4 @@ a {
 }
 
 /* Ensure controls are clickable and above the plant, but below the notes */
-.controls {
-    z-index: 500; /* Higher than plant (1), lower than Note (999) */
-}
+
