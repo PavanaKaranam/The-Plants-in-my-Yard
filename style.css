@@ -550,3 +550,20 @@ a {
         background-clip: content-box;
     }
 }
+
+#plant-container svg {
+    /* 1. Ensure the plant never steals clicks from the slider */
+    pointer-events: none; 
+    
+    /* 2. Keep the size rules you already have */
+    width: 80vmin;
+    height: 80vmin;
+    max-width: 500px;
+    max-height: 500px;
+    overflow: visible;
+}
+
+/* Ensure controls are clickable and above the plant, but below the notes */
+.controls {
+    z-index: 500; /* Higher than plant (1), lower than Note (999) */
+}
