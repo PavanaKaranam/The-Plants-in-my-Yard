@@ -59,6 +59,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
+   position: relative;
+    z-index: 1;
     
     /* A subtle spotlight background */
 }
@@ -99,7 +102,7 @@ svg {
     align-items: flex-end;  /* Aligns everything to the right edge */
     gap: 20px;
     
-    z-index: 100; /* Ensures controls always float on top of the plant */
+    z-index: 10; /* Ensures controls always float on top of the plant */
 }
 
 .control-group {
@@ -475,7 +478,7 @@ a {
         
         align-items: center;
         flex-direction: column-reverse; /* Puts the Button at bottom, Slider above */
-        z-index: 888;
+        z-index: 10;
                
     }
 
