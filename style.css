@@ -287,6 +287,7 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
+    touch-action: none;
     
     width: 32px;
     height: 32px;
@@ -429,6 +430,7 @@ a {
         align-items: center;
         flex-direction: column-reverse; /* Puts the Button at bottom, Slider above */
         gap: 15px;
+        z-index: 10001;
                
     }
 
@@ -488,5 +490,9 @@ a {
     /* 5. ADJUST THE SLIDER WIDTH */
     input[type="range"] {
         width: 80vw; /* 80% of screen width */
+             touch-action: none;
+
+        padding: 20px 0; 
+    background-clip: content-box;
     }
 }
