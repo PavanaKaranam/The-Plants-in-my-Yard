@@ -1332,37 +1332,50 @@
             document.documentElement.style.setProperty('--hue-degree', 0);
         });
 
-        // Event: Slider Move
-        // --- ROBUST COLOR LOGIC (MOBILE FIX) ---
+       // --- NUCLEAR OPTION SLIDER LOGIC ---
         
-        function updateColor() {
-            // 1. Get the value
-            const hue = slider.value;
+        // 1. The Worker Function: Updates Color & Forces Repaint
+        function applyColor(val) {
+            // Update the CSS variable
+            document.documentElement.style.setProperty('--hue-degree', val);
             
-            // 2. Set the variable
-            document.documentElement.style.setProperty('--hue-degree', hue);
-            
-            // 3. FORCE REPAINT (The Mobile Magic)
-            // This tricks the browser into redrawing the SVG immediately
+            // Force Repaint (Fixes "frozen" SVG on iPhone)
             const plantGroup = document.querySelector('.dynamic-leaf');
             if (plantGroup) {
-                plantGroup.style.display = 'none'; // Hide it
-                plantGroup.offsetHeight;           // Read size (forces calc)
-                plantGroup.style.display = '';     // Show it again
+                plantGroup.style.display = 'none'; 
+                plantGroup.offsetHeight; // Triggers reflow
+                plantGroup.style.display = ''; 
             }
         }
 
-        // Listen for: Dragging (Desktop)
-        slider.addEventListener('input', updateColor);
+        // 2. Desktop / Standard Dragging
+        slider.addEventListener('input', (e) => {
+            applyColor(e.target.value);
+        });
 
-        // Listen for: Letting Go (Mobile Backup)
-        slider.addEventListener('change', updateColor);
-
-        // Listen for: Finger Moving (Aggressive Mobile Update)
+        // 3. Mobile Finger Tracking (The Real Fix)
+        // We calculate the value manually because the browser is too slow
         slider.addEventListener('touchmove', (e) => {
-            updateColor();
+            const touch = e.touches[0];
+            const rect = slider.getBoundingClientRect();
+            
+            // Calculate where the finger is (0% to 100% of the bar)
+            let percent = (touch.clientX - rect.left) / rect.width;
+            
+            // Safety limits (cannot go below 0 or above 1)
+            if (percent < 0) percent = 0;
+            if (percent > 1) percent = 1;
+            
+            // Convert percent to degrees (0 to 360)
+            const hue = Math.round(percent * 360);
+            
+            // 1. Force the visual slider thumb to jump to your finger
+            slider.value = hue;
+            
+            // 2. Apply the color immediately
+            applyColor(hue);
+            
         }, { passive: true });
-        // Start
         renderPlant();
 
        // --- PLANT SHEET LOGIC ---
