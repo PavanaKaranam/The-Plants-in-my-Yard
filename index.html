@@ -1333,11 +1333,35 @@
         });
 
         // Event: Slider Move
-        slider.addEventListener('input', (e) => {
-            // Update the CSS variable
-            document.documentElement.style.setProperty('--hue-degree', e.target.value);
-        });
+        // --- ROBUST COLOR LOGIC (MOBILE FIX) ---
+        
+        function updateColor() {
+            // 1. Get the value
+            const hue = slider.value;
+            
+            // 2. Set the variable
+            document.documentElement.style.setProperty('--hue-degree', hue);
+            
+            // 3. FORCE REPAINT (The Mobile Magic)
+            // This tricks the browser into redrawing the SVG immediately
+            const plantGroup = document.querySelector('.dynamic-leaf');
+            if (plantGroup) {
+                plantGroup.style.display = 'none'; // Hide it
+                plantGroup.offsetHeight;           // Read size (forces calc)
+                plantGroup.style.display = '';     // Show it again
+            }
+        }
 
+        // Listen for: Dragging (Desktop)
+        slider.addEventListener('input', updateColor);
+
+        // Listen for: Letting Go (Mobile Backup)
+        slider.addEventListener('change', updateColor);
+
+        // Listen for: Finger Moving (Aggressive Mobile Update)
+        slider.addEventListener('touchmove', (e) => {
+            updateColor();
+        }, { passive: true });
         // Start
         renderPlant();
 
