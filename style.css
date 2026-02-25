@@ -61,8 +61,6 @@ body {
 
    position: relative;
     z-index: 1;
-   transform: translateZ(0);
-    
 }
 
 
@@ -431,7 +429,6 @@ a {
 
    .dynamic-leaf {
         transition: none !important;
-        will-change: filter; /* Hint to browser to keep it visible */
     }
 
     body {
@@ -574,4 +571,5 @@ a {
 }
 
 /* Ensure controls are clickable and above the plant, but below the notes */
+
 
