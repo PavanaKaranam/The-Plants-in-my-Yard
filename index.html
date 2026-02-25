@@ -1310,15 +1310,11 @@
         ];
 
       
-
-     
     // --- 1. SETUP ---
     const plantLibrary = [
-        // ... (PASTE YOUR PLANT SVG CODES HERE - keeping them as they are in your file) ...
-        // I am hiding them here to save space, but DO NOT DELETE THEM in your file!
+        // ... PASTE YOUR PLANT SVG STRINGS HERE ...
+        // (Keep them exactly as they are in your code)
     ];
-    
-    // NOTE: Make sure your plantLibrary array has the SVGs inside it!
 
     let currentIndex = 0;
     const container = document.getElementById('plant-container');
@@ -1328,57 +1324,49 @@
 
     // --- 2. RENDER LOGIC ---
     function renderPlant() {
-        if(plantLibrary.length > 0) {
+        if (plantLibrary.length > 0) {
             container.innerHTML = plantLibrary[currentIndex];
+            // Re-apply color immediately after rendering
+            const currentHue = slider.value;
+            root.style.setProperty('--hue-degree', currentHue);
         }
     }
 
-    // --- 3. NUCLEAR SLIDER LOGIC (The Mobile Fix) ---
+    // --- 3. SLIDER LOGIC (Manual Math) ---
+    // We calculate the slider value manually to bypass mobile browser lag
     
-    // Helper: Apply color & Force Repaint
-    function applyColor(val) {
-        // Update CSS Variable
-        root.style.setProperty('--hue-degree', val);
-        
-        // Force the browser to wake up and redraw the filter
-        const plantGroup = document.querySelector('.dynamic-leaf');
-        if (plantGroup) {
-            // Tiny opacity toggle forces a repaint without flickering
-            plantGroup.style.opacity = plantGroup.style.opacity === '0.99' ? '1' : '0.99';
-        }
-    }
-
-    // A. Desktop Dragging (Standard)
-    slider.addEventListener('input', (e) => {
-        applyColor(e.target.value);
-    });
-
-    // B. Mobile Finger Tracking (Manual Math)
-    // This ignores the stuck slider.value and calculates position manually.
-    slider.addEventListener('touchmove', (e) => {
-        // 1. Stop the screen from scrolling while coloring
-        e.preventDefault(); 
-        
-        const touch = e.touches[0];
+    function handleMove(clientX) {
         const rect = slider.getBoundingClientRect();
         
-        // 2. Math: Where is the finger relative to the bar width?
-        let percent = (touch.clientX - rect.left) / rect.width;
+        // Calculate percentage (0 to 1) based on click position
+        let percent = (clientX - rect.left) / rect.width;
         
-        // 3. Clamp results between 0 and 1
+        // Clamp (Prevent going outside bounds)
         if (percent < 0) percent = 0;
         if (percent > 1) percent = 1;
         
-        // 4. Convert to Degrees (0 to 360)
+        // Convert to Hue (0-360)
         const hue = Math.round(percent * 360);
         
-        // 5. Force the slider thumb to move visibily
+        // Update Visuals
         slider.value = hue;
+        root.style.setProperty('--hue-degree', hue);
+    }
+
+    // A. Desktop Dragging
+    slider.addEventListener('input', (e) => {
+        root.style.setProperty('--hue-degree', e.target.value);
+    });
+
+    // B. Mobile Touching (The Fix)
+    slider.addEventListener('touchmove', (e) => {
+        // STOP SCREEN SCROLLING
+        e.preventDefault(); 
         
-        // 6. Apply the color
-        applyColor(hue);
+        // Use the first finger's position
+        handleMove(e.touches[0].clientX);
         
-    }, { passive: false }); // 'false' allows us to stop the scrolling
+    }, { passive: false });
 
     // --- 4. BUTTON LOGIC ---
     btn.addEventListener('click', () => {
@@ -1386,13 +1374,13 @@
             currentIndex = (currentIndex + 1) % plantLibrary.length;
             renderPlant();
             
-            // Reset slider visual and color
+            // Reset slider
             slider.value = 0;
-            applyColor(0);
+            root.style.setProperty('--hue-degree', 0);
         }
     });
 
-    // --- 5. SHEET & NOTE LOGIC ---
+    // --- 5. OVERLAYS (SHEET & NOTE) ---
     const plantSheetBtn = document.querySelector(".plant-aplant");
     const overlay = document.querySelector(".sheet-overlay");
     const noteBtn = document.querySelector(".note");
@@ -1407,10 +1395,8 @@
         plantNote.style.display = (plantNote.style.display === "flex") ? "none" : "flex";
     });
 
-    // Close when clicking outside
     document.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.style.display = "none";
-        
         if (plantNote.style.display === "flex" && !plantNote.contains(e.target) && e.target !== noteBtn) {
             plantNote.style.display = "none";
         }
@@ -1422,21 +1408,24 @@
         const fixedHeight = 500;
         const aspectRatio = window.innerWidth / window.innerHeight;
         const fixedWidth = fixedHeight * aspectRatio;
-
         const canvas = document.createElement('canvas');
         canvas.width = fixedWidth;
         canvas.height = fixedHeight;
         const ctx = canvas.getContext('2d');
 
+        // Draw Background
         const bgColor = getComputedStyle(document.body).backgroundColor;
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, fixedWidth, fixedHeight);
 
+        // Prepare SVG
         const svgElement = document.querySelector('#plant-container svg');
+        if (!svgElement) return; // Safety check
+        
         const clonedSvg = svgElement.cloneNode(true);
         const currentHue = getComputedStyle(root).getPropertyValue('--hue-degree').trim();
-        const dynamicGroup = clonedSvg.querySelector('.dynamic-leaf');
         
+        const dynamicGroup = clonedSvg.querySelector('.dynamic-leaf');
         if(dynamicGroup) {
             dynamicGroup.style.filter = `hue-rotate(${currentHue}deg)`;
         }
@@ -1444,6 +1433,7 @@
         clonedSvg.setAttribute('width', fixedHeight * 0.8);
         clonedSvg.setAttribute('height', fixedHeight * 0.8);
 
+        // Convert to Image
         const serializer = new XMLSerializer();
         const svgString = serializer.serializeToString(clonedSvg);
         const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
