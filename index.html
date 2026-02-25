@@ -1332,21 +1332,53 @@
             document.documentElement.style.setProperty('--hue-degree', 0);
         });
 
-       // --- NUCLEAR OPTION SLIDER LOGIC ---
+     // --- NUCLEAR OPTION SLIDER LOGIC (FINAL FIX) ---
         
-        // 1. The Worker Function: Updates Color & Forces Repaint
+        // 1. The Worker Function
         function applyColor(val) {
-            // Update the CSS variable
+            // Update the variable
             document.documentElement.style.setProperty('--hue-degree', val);
             
-            // Force Repaint (Fixes "frozen" SVG on iPhone)
+            // Force the specific group to update
             const plantGroup = document.querySelector('.dynamic-leaf');
             if (plantGroup) {
-                plantGroup.style.display = 'none'; 
-                plantGroup.offsetHeight; // Triggers reflow
-                plantGroup.style.display = ''; 
+                // Toggle a tiny opacity change to force the GPU to render the new frame
+                // (This is lighter than display:none which causes flickering)
+                plantGroup.style.opacity = plantGroup.style.opacity === '0.99' ? '1' : '0.99';
             }
         }
+
+        // 2. Desktop Dragging
+        slider.addEventListener('input', (e) => {
+            applyColor(e.target.value);
+        });
+
+        // 3. Mobile Finger Tracking (The Scroll Killer)
+        slider.addEventListener('touchmove', (e) => {
+            // CRITICAL: Stop the screen from scrolling while dragging!
+            e.preventDefault(); 
+
+            const touch = e.touches[0];
+            const rect = slider.getBoundingClientRect();
+            
+            // Calculate finger position relative to the slider width
+            // We use the full width of the element including padding
+            let percent = (touch.clientX - rect.left) / rect.width;
+            
+            // Clamp value so it doesn't go below 0 or above 1
+            if (percent < 0) percent = 0;
+            if (percent > 1) percent = 1;
+            
+            // Convert to degrees
+            const hue = Math.round(percent * 360);
+            
+            // Force the visual slider thumb to snap to finger
+            slider.value = hue;
+            
+            // Apply color
+            applyColor(hue);
+            
+        }, { passive: false }); // <--- THIS MUST BE FALSE
 
         // 2. Desktop / Standard Dragging
         slider.addEventListener('input', (e) => {
