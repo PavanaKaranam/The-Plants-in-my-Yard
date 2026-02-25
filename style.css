@@ -433,11 +433,35 @@ a {
 
 .figma-rect {
         /* Use 70% width to be super safe */
-        width: 70vw !important; 
-        max-width: 250px; 
+        width: 250px; 
+        
         
         /* Shrink it a bit more to save the dashed borders */
         transform: scale(0.85); 
+    }
+    .figma-rect::after {
+    content: "";
+    position: absolute;
+    
+    /* THE MATH: 
+       We want the 22px border centered on the edge.
+       So we pull the box outward by 11px (half the stroke). 
+    */
+    top: -15px;
+    left: -30px;
+    right: -30px;
+    bottom: -15px;
+    
+    /* The Stroke Style */
+    border: 22px dashed #02154F;
+    
+    /* Optional: ensures clicks pass through the border to the button/div */
+    pointer-events: none; 
+  }
+
+    #nextBtn{
+        margin-bottom: 0;
+
     }
 
     /* 1. MOVE CONTROLS TO THE BOTTOM */
