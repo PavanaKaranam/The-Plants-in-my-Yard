@@ -1,12 +1,12 @@
 /* --- GLOBAL VARIABLES --- */
 
 :root {
-    --bg-color: #02154F;
+   --bg-color: #02154F;
     --text-color: #e0e0e0;
-    --ui-bg: 0C1F58(255, 255, 255, 0.08);
+    --ui-bg: rgba(255, 255, 255, 0.08); /* ✅ FIXED */
     
     /* THE MAGIC VARIABLE: Changed by JS */
-    --hue-degree: 0; 
+    --hue-degree: 0;
 }
 
 /* --- LAYOUT --- */
@@ -220,16 +220,22 @@ svg {
 
 
 /* --- SLIDER STYLE --- */
+/* --- SLIDER STYLE (Global) --- */
 input[type="range"] {
     -webkit-appearance: none;
     width: 230px;
-height: 6px;
-border-radius: 12px;
-background: #030918;
-  
+    height: 6px;
+    background: #030918;
     border-radius: 6px;
     outline: none;
     cursor: pointer;
+    
+    /* ADD THIS HERE TO FIX TOUCH SCROLLING ISSUES EVERYWHERE */
+    touch-action: none; 
+    
+    /* ADD THIS TO MAKE THE TOUCH AREA BIGGER */
+    padding: 20px 0;
+    background-clip: content-box;
 }
 
 /* 1. THE THUMB (Chrome, Safari, Edge) */
@@ -415,7 +421,7 @@ a {
 }
 
 /* --- MOBILE LAYOUT (Phones & Tablets) --- */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
 
     body {
         /* This adds invisible "padding" at the bottom.
@@ -423,6 +429,15 @@ a {
            so it moves the "Center" line UP. */
         padding-bottom: 180px; 
         box-sizing: border-box; /* Prevents scrollbars */
+    }
+
+    #nextBtn{
+        /* Instead of fixed 250px, make it responsive */
+        width: 80vw; /* 80% of screen width */
+        max-width: 250px; /* But never bigger than the original size */
+        
+        /* Scale it slightly down so the dashed border fits safely */
+        transform: scale(0.9); 
     }
 
     /* 1. MOVE CONTROLS TO THE BOTTOM */
