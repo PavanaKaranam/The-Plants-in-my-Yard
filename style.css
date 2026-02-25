@@ -432,12 +432,12 @@ a {
     }
 
 .figma-rect {
-        /* Instead of fixed 250px, make it responsive */
-        width: 80vw; /* 80% of screen width */
-        max-width: 250px; /* But never bigger than the original size */
+        /* Use 70% width to be super safe */
+        width: 70vw !important; 
+        max-width: 250px; 
         
-        /* Scale it slightly down so the dashed border fits safely */
-        transform: scale(0.9); 
+        /* Shrink it a bit more to save the dashed borders */
+        transform: scale(0.85); 
     }
 
     /* 1. MOVE CONTROLS TO THE BOTTOM */
@@ -511,11 +511,13 @@ a {
     }
 
     /* 5. ADJUST THE SLIDER WIDTH */
+    /* Inside Media Query */
     input[type="range"] {
-        width: 80vw; /* 80% of screen width */
-             touch-action: none;
-
-        padding: 20px 0; 
-    background-clip: content-box;
+        width: 80vw;
+        touch-action: none;
+        
+        /* Increase from 20px to 40px for a huge touch target */
+        padding: 40px 0; 
+        background-clip: content-box;
     }
 }
