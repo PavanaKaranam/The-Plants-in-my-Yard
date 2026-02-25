@@ -431,7 +431,7 @@ a {
         box-sizing: border-box; /* Prevents scrollbars */
     }
 
-    #nextBtn{
+.figma-rect {
         /* Instead of fixed 250px, make it responsive */
         width: 80vw; /* 80% of screen width */
         max-width: 250px; /* But never bigger than the original size */
