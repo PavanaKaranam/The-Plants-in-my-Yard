@@ -1311,9 +1311,16 @@
 
       
 
-        // --- APP LOGIC ---
+      <script>
+    // --- 1. SETUP ---
+    const plantLibrary = [
+        // ... (PASTE YOUR PLANT SVG CODES HERE - keeping them as they are in your file) ...
+        // I am hiding them here to save space, but DO NOT DELETE THEM in your file!
+    ];
+    
+    // NOTE: Make sure your plantLibrary array has the SVGs inside it!
 
-      let currentIndex = 0;
+    let currentIndex = 0;
     const container = document.getElementById('plant-container');
     const slider = document.getElementById('hueSlider');
     const btn = document.getElementById('nextBtn');
@@ -1321,51 +1328,57 @@
 
     // --- 2. RENDER LOGIC ---
     function renderPlant() {
-        // If the array is empty in this copy/paste, we prevent a crash
         if(plantLibrary.length > 0) {
-             container.innerHTML = plantLibrary[currentIndex];
+            container.innerHTML = plantLibrary[currentIndex];
         }
     }
 
-    // --- 3. SLIDER LOGIC (THE FIX) ---
+    // --- 3. NUCLEAR SLIDER LOGIC (The Mobile Fix) ---
+    
+    // Helper: Apply color & Force Repaint
     function applyColor(val) {
-        // Apply color
+        // Update CSS Variable
         root.style.setProperty('--hue-degree', val);
         
-        // Force Repaint (Fixes "frozen" SVG on iPhone)
+        // Force the browser to wake up and redraw the filter
         const plantGroup = document.querySelector('.dynamic-leaf');
         if (plantGroup) {
-            // Toggle opacity slightly to force GPU to wake up
+            // Tiny opacity toggle forces a repaint without flickering
             plantGroup.style.opacity = plantGroup.style.opacity === '0.99' ? '1' : '0.99';
         }
     }
 
-    // Desktop Dragging
+    // A. Desktop Dragging (Standard)
     slider.addEventListener('input', (e) => {
         applyColor(e.target.value);
     });
 
-    // Mobile Dragging (Stop Scroll & Force Update)
+    // B. Mobile Finger Tracking (Manual Math)
+    // This ignores the stuck slider.value and calculates position manually.
     slider.addEventListener('touchmove', (e) => {
-        // THIS IS THE KEY LINE:
+        // 1. Stop the screen from scrolling while coloring
         e.preventDefault(); 
         
-        // Calculate finger position manually
         const touch = e.touches[0];
         const rect = slider.getBoundingClientRect();
+        
+        // 2. Math: Where is the finger relative to the bar width?
         let percent = (touch.clientX - rect.left) / rect.width;
         
-        // Clamp
+        // 3. Clamp results between 0 and 1
         if (percent < 0) percent = 0;
         if (percent > 1) percent = 1;
         
+        // 4. Convert to Degrees (0 to 360)
         const hue = Math.round(percent * 360);
         
-        // Visual Update
+        // 5. Force the slider thumb to move visibily
         slider.value = hue;
-        // Color Update
+        
+        // 6. Apply the color
         applyColor(hue);
-    }, { passive: false }); // Must be false to allow preventDefault
+        
+    }, { passive: false }); // 'false' allows us to stop the scrolling
 
     // --- 4. BUTTON LOGIC ---
     btn.addEventListener('click', () => {
@@ -1373,7 +1386,7 @@
             currentIndex = (currentIndex + 1) % plantLibrary.length;
             renderPlant();
             
-            // Reset slider
+            // Reset slider visual and color
             slider.value = 0;
             applyColor(0);
         }
@@ -1397,6 +1410,7 @@
     // Close when clicking outside
     document.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.style.display = "none";
+        
         if (plantNote.style.display === "flex" && !plantNote.contains(e.target) && e.target !== noteBtn) {
             plantNote.style.display = "none";
         }
@@ -1408,30 +1422,40 @@
         const fixedHeight = 500;
         const aspectRatio = window.innerWidth / window.innerHeight;
         const fixedWidth = fixedHeight * aspectRatio;
+
         const canvas = document.createElement('canvas');
         canvas.width = fixedWidth;
         canvas.height = fixedHeight;
         const ctx = canvas.getContext('2d');
+
         const bgColor = getComputedStyle(document.body).backgroundColor;
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, fixedWidth, fixedHeight);
+
         const svgElement = document.querySelector('#plant-container svg');
         const clonedSvg = svgElement.cloneNode(true);
         const currentHue = getComputedStyle(root).getPropertyValue('--hue-degree').trim();
         const dynamicGroup = clonedSvg.querySelector('.dynamic-leaf');
-        if(dynamicGroup) dynamicGroup.style.filter = `hue-rotate(${currentHue}deg)`;
+        
+        if(dynamicGroup) {
+            dynamicGroup.style.filter = `hue-rotate(${currentHue}deg)`;
+        }
+
         clonedSvg.setAttribute('width', fixedHeight * 0.8);
         clonedSvg.setAttribute('height', fixedHeight * 0.8);
+
         const serializer = new XMLSerializer();
         const svgString = serializer.serializeToString(clonedSvg);
         const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
         const url = URL.createObjectURL(svgBlob);
+
         const img = new Image();
         img.onload = () => {
             const plantSize = fixedHeight * 0.8;
             const x = (fixedWidth - plantSize) / 2;
             const y = (fixedHeight - plantSize) / 2;
             ctx.drawImage(img, x, y, plantSize, plantSize);
+            
             const link = document.createElement('a');
             link.download = 'my-future-plant.png';
             link.href = canvas.toDataURL('image/png');
