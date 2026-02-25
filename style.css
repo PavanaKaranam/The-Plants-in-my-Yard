@@ -415,7 +415,15 @@ a {
 }
 
 /* --- MOBILE LAYOUT (Phones & Tablets) --- */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+
+    body {
+        /* This adds invisible "padding" at the bottom.
+           Flexbox sees this and thinks the screen is shorter,
+           so it moves the "Center" line UP. */
+        padding-bottom: 180px; 
+        box-sizing: border-box; /* Prevents scrollbars */
+    }
 
     /* 1. MOVE CONTROLS TO THE BOTTOM */
     .controls {
@@ -479,9 +487,9 @@ a {
     
     /* 4. ADJUST THE NOTE POPUP */
     .plant-note {
-        width: 70%;       /* Fit the screen width */
+        width: 80%;       /* Fit the screen width */
         height: auto;     /* Let height grow with text */
-        max-height: 80vh; /* Allow scrolling if text is long */
+        max-height: 60vh; /* Allow scrolling if text is long */
         overflow-y: auto; /* Enable scroll */
         padding: 40px;
         font-size: 16px;
