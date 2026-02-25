@@ -570,6 +570,30 @@ a {
     overflow: visible;
 }
 
-/* Ensure controls are clickable and above the plant, but below the notes */
 
+.mobile-disclaimer {
+    display: none;
+}
+
+/* --- MOBILE ONLY STYLES --- */
+@media (max-width: 850px) {
+
+    /* 1. Show the Disclaimer */
+    .mobile-disclaimer {
+        display: block;
+        color: #FFF831; /* Your yellow color */
+        font-family: "ubuntu-mono", monospace;
+        font-size: 12px;
+        text-align: center;
+        max-width: 300px;
+        margin-top: -15px;
+        margin-bottom: 30px;
+    }
+
+    /* 2. CRITICAL: Turn off the heavy filters on mobile so the plant APPEARS */
+    .dynamic-leaf {
+        filter: none !important; 
+    }
+    
+}
 
