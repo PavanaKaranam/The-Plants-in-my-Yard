@@ -448,8 +448,8 @@ a {
        So we pull the box outward by 11px (half the stroke). 
     */
     top: -15px;
-    left: -30px;
-    right: -30px;
+    left: -40px;
+    right: -40px;
     bottom: -15px;
     
     /* The Stroke Style */
@@ -467,17 +467,20 @@ a {
     /* 1. MOVE CONTROLS TO THE BOTTOM */
     .controls {
         top: auto;      /* Let go of the top */
-        bottom: 0;      /* Stick to the bottom */
+        bottom: 0px;      /* Stick to the bottom */
         right: 0;       /* Center horizontally */
-        left: 0;
-        
+        left: 0;        
         width: 100%;    /* Full width background */
-        padding: 20px 0 40px 0; /* Add padding for safe areas */
+        padding: 20px 0  5px 0; /* Add padding for safe areas */
         
         align-items: center;
         flex-direction: column-reverse; /* Puts the Button at bottom, Slider above */
-        z-index: 10001;
+        z-index: 888;
                
+    }
+
+    .control-group{
+        margin-top: -15px;
     }
 
     /* 2. MOVE "PLANT SHEET" & "NOTE" TO TOP CORNERS */
