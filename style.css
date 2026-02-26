@@ -382,8 +382,7 @@ img {
 
 .plant-note{
     position: fixed; 
-    box-sizing: border-box;
-    
+   
     /* 2. Move the top-left corner to the dead center of the screen */
     top: 50%;
     left: 50%;
@@ -404,7 +403,7 @@ img {
     color: #02154F;
 
     width: 431px;
-    height: 387px;
+    height: 330px;
 
     display: none;
     flex-direction: column;
