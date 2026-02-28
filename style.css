@@ -611,5 +611,9 @@ a {
     .dynamic-leaf {
         filter: none !important; 
     }
+
+   .splash-text {
+    padding-bottom: 20px; 
+}
     
 }
