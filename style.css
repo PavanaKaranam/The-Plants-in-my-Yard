@@ -5,7 +5,7 @@
     --text-color: #e0e0e0;
     --ui-bg: rgba(255, 255, 255, 0.08); /* ✅ FIXED */
     
-    /* THE MAGIC VARIABLE: Changed by JS */
+    
     --hue-degree: 0;
 }
 
@@ -20,10 +20,55 @@ body {
     justify-content:center ;
     height: 100vh;
     overflow: auto;
-
-    
-  
 }
+
+
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #000000; 
+    z-index: 999999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 1s ease-in-out; 
+}
+
+#splash-screen.slide-up {
+    transform: translateY(-100%); 
+}
+
+#splash-screen picture {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#splash-screen img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+}
+
+.splash-text {
+    font-family: "pixelify-sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+    color: #FFF953;
+    font-size: 20px;
+    
+    position: absolute; 
+    bottom: 30px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+ 
 .container{
     display: flex;
     flex-direction: column;
@@ -66,28 +111,23 @@ body {
 
 
 svg {
-    width: 80vmin;  /* Takes up 80% of the smallest screen side */
-    height: 80vmin; /* Keeps it square */
-    
-    /* Safety Cap: Stop it from getting TOO giant on huge monitors */
+    width: 80vmin;  
+    height: 80vmin; 
     max-width: 500px;
     max-height: 500px;
     
     overflow: visible;
 }
 
-/* --- THE MAGIC COLOR LOGIC --- */
-/* This rotates the hue of your textures without flattening them */
+
 .dynamic-leaf {
     filter: hue-rotate(calc(var(--hue-degree) * 1deg));
     transition: filter 0.1s linear; /* Smooth sliding */
     transform-origin: center;
 }
 
-/* --- CONTROL PANEL --- */
-/* --- CONTROL PANEL --- */
+
 .controls {
-    /* THE MAGIC: Pins it to the top right of the screen */
     position: absolute;
     top: 50px;
     right: 50px;
@@ -136,7 +176,6 @@ svg {
 
 
 .figma-rect {
-    /* Parent element handles size and fill */
     width: 250px;
     height: 70px;
     background-color: #030918;
@@ -154,10 +193,7 @@ svg {
     content: "";
     position: absolute;
     
-    /* THE MATH: 
-       We want the 22px border centered on the edge.
-       So we pull the box outward by 11px (half the stroke). 
-    */
+ 
     top: -15px;
     left: -11px;
     right: -11px;
@@ -193,9 +229,9 @@ svg {
     cursor: pointer;
 }
 .responsive-sheet {
-    max-width: 100%;  /* Never wider than the screen */
-    max-height: 80vh; /* Never taller than 80% of the screen height */
-    height: auto;     /* Keep the aspect ratio correct */
+    max-width: 100%;  
+    max-height: 80vh; 
+    height: auto;     
     display: block;
     margin: 0 auto;
     border-radius: 8px;
@@ -223,8 +259,7 @@ svg {
     
 
 
-/* --- SLIDER STYLE --- */
-/* --- SLIDER STYLE (Global) --- */
+
 input[type="range"] {
     -webkit-appearance: none;
     width: 230px;
@@ -234,10 +269,8 @@ input[type="range"] {
     outline: none;
     cursor: pointer;
     
-    /* ADD THIS HERE TO FIX TOUCH SCROLLING ISSUES EVERYWHERE */
     touch-action: none; 
     
-    /* ADD THIS TO MAKE THE TOUCH AREA BIGGER */
     padding: 20px 0;
     background-clip: content-box;
 }
@@ -258,8 +291,6 @@ input[type="range"]::-webkit-slider-thumb {
     border: none;
     border-radius: 0;
 
-    /* THE FLOWER SHAPE MASK */
-    /* We define the pattern variable first */
     --g: / 25.486% 25.486% radial-gradient(#000 calc(71% - 1px), #0000 71%) no-repeat;
     
     mask: 
@@ -293,7 +324,6 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 /* 2. THE THUMB (Firefox) */
-/* Chrome, Safari, Edge Version */
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -431,9 +461,6 @@ a {
     }
 
     body {
-        /* This adds invisible "padding" at the bottom.
-           Flexbox sees this and thinks the screen is shorter,
-           so it moves the "Center" line UP. */
         padding-bottom: 180px; 
         box-sizing: border-box; /* Prevents scrollbars */
     }
@@ -450,10 +477,7 @@ a {
     content: "";
     position: absolute;
     
-    /* THE MATH: 
-       We want the 22px border centered on the edge.
-       So we pull the box outward by 11px (half the stroke). 
-    */
+ 
     top: -15px;
     left: -40px;
     right: -40px;
@@ -490,8 +514,6 @@ a {
         margin-top: -15px;
     }
 
-    /* 2. MOVE "PLANT SHEET" & "NOTE" TO TOP CORNERS */
-    /* We move these out of the way of the bottom controls */
     .plant-aplant {
         bottom: auto;
         top: 30px;
@@ -508,8 +530,6 @@ a {
         
     }
     
-    /* If you have a download button, move it next to the note */
-    /* Inside @media (max-width: 768px) */
 
     .download {
         position: absolute; /* Make sure it floats freely */
@@ -533,7 +553,6 @@ a {
 
  
     
-    /* 4. ADJUST THE NOTE POPUP */
     .plant-note {
         width: 80%;       /* Fit the screen width */
         height: auto;     /* Let height grow with text */
@@ -543,8 +562,7 @@ a {
         font-size: 16px;
     }
 
-    /* 5. ADJUST THE SLIDER WIDTH */
-    /* Inside Media Query */
+
     input[type="range"] {
         width: 80vw;
         touch-action: none;
@@ -595,4 +613,3 @@ a {
     }
     
 }
-
